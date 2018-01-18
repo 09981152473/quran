@@ -8,7 +8,7 @@ import requests
 import xmltodict
 import sys
 #reload(sys) 
-sys.setdefaultencoding('UTF8')
+#sys.setdefaultencoding('UTF8')
 
 ar=requests.get("https://tyto.ir/quran-simple.xml")
 fa=requests.get("http://tanzil.net/trans/?transID=fa.gharaati&type=xml")
