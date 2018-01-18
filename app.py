@@ -6,6 +6,7 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto, InputTextMessageContent
 import requests
 import xmltodict
+from telepot.loop import OrderedWebhook
 import sys
 import time
 #reload(sys) 
