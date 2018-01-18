@@ -37,7 +37,7 @@ def handle(msg):
     text=''
     for i in range(len(d)):
        text=''
-       if i in range(0,280,10):
+       if i in range(0,280,1):
           time.sleep(0.5)  
        arr=ar['quran']['sura'][sure]['aya'][i]['@text']
        enn=en['quran']['sura'][sure]['aya'][i]['@text']
