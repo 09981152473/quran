@@ -7,7 +7,7 @@ from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto,
 import requests
 import xmltodict
 import sys
-reload(sys) 
+#reload(sys) 
 sys.setdefaultencoding('UTF8')
 
 ar=requests.get("https://tyto.ir/quran-simple.xml")
