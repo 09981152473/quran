@@ -8,6 +8,7 @@ import requests
 import xmltodict
 from telepot.loop import OrderedWebhook
 import sys
+import random
 import time
 #reload(sys) 
 #sys.setdefaultencoding('UTF8')
@@ -55,7 +56,7 @@ def display_link():
     return '<a href="https://telegram.me/%s?start=%s">Open conversation with bot</a>' % (BOT_USERNAME, first_key_in_database)
 @app.route('/webhook', methods=['GET', 'POST'])
 def pass_update():
-    webhook.feed(request.data)
+    webhook.feed(str(random.randint(1,1000)))
     return 'OK'       
             
 bot = telepot.Bot('538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU')
