@@ -46,7 +46,7 @@ def handle(msg):
          bot.sendMessage(chat_id, text)
        else:
          bot.sendMessage(chat_id, 'too big')
-bot = telepot.Bot('375977039:AAFOsgDE7kv9K9hRCHA1UOofhGjbxSXv4LA')
+bot = telepot.Bot('538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU')
 bot.message_loop(handle)
 print ('I am listening ...')
 
