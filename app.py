@@ -66,7 +66,7 @@ print ('I am listening ...')
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
     try:
-        bot.setWebhook(URL)
+        bot.setWebhook()
     # Sometimes it would raise this error, but webhook still set successfully.
     except telepot.exception.TooManyRequestsError:
         pass
