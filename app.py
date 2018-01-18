@@ -36,7 +36,7 @@ def handle(msg):
  if content_type == 'text':
     command = msg['text']
     print ('Got command: %s' % command)
-    if command='\start':
+    if command=='\start':
        bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup )
     if command in listnum.keys():
        command=listnum[command]
