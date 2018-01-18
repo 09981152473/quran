@@ -30,7 +30,7 @@ def handle(msg):
  if content_type == 'text':
     command = msg['text']
     print ('Got command: %s' % command)
-    sure=command-1
+    sure=int(command)-1
     surename=fa['quran']['sura'][sure]['@name']
     d=fa['quran']['sura'][sure]['aya']
     text=''
