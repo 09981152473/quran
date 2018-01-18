@@ -20,29 +20,44 @@ ar=xmltodict.parse(ar.text)
 fa=xmltodict.parse(fa.text)
 en=xmltodict.parse(en.text)
 
+list=[]
+listnum={}
+for i in range(0,114):
+    surename=fa['quran']['sura'][i]['@name']
+    list.append(surename)
+    listnum[surename]=i
+startmarkup = ReplyKeyboardMarkup(keyboard=list,resize_keyboard=True)
+    
+    
+    
+
 def handle(msg):
  content_type, chat_type, chat_id = telepot.glance(msg)
  if content_type == 'text':
     command = msg['text']
     print ('Got command: %s' % command)
-    sure=int(command)-1
-    surename=fa['quran']['sura'][sure]['@name']
-    d=fa['quran']['sura'][sure]['aya']
-    text=''
-    for i in range(len(d)):
+    if command='\start':
+       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup )
+    if command in listnum.keys():
+       command=listnum[command]
+       sure=int(command)-1
+       surename=fa['quran']['sura'][sure]['@name']
+       d=fa['quran']['sura'][sure]['aya']
        text=''
-       if i in range(0,280,1):
-          time.sleep(0.5)  
-       arr=ar['quran']['sura'][sure]['aya'][i]['@text']
-       enn=en['quran']['sura'][sure]['aya'][i]['@text']
-       faa=fa['quran']['sura'][sure]['aya'][i]['@text']
-       text='....#'+surename+'....'+str(i+1)+"...."+'\n'
-       text+='\n'+arr+'\n'+enn+'\n'+faa
-       text+='\n'
-       if len(text)<4000:
-         bot.sendMessage(chat_id, text)
-       else:
-         bot.sendMessage(chat_id, 'too big')
+       for i in range(len(d)):
+          text=''
+          if i in range(0,280,1):
+             time.sleep(0.5)  
+          arr=ar['quran']['sura'][sure]['aya'][i]['@text']
+          enn=en['quran']['sura'][sure]['aya'][i]['@text']
+          faa=fa['quran']['sura'][sure]['aya'][i]['@text']
+          text='....#'+surename+'....'+str(i+1)+"...."+'\n'
+          text+='\n'+arr+'\n'+enn+'\n'+faa
+          text+='\n'
+          if len(text)<4000:
+            bot.sendMessage(chat_id, text)
+          else:
+            bot.sendMessage(chat_id, 'too big')
 
 
 app = Flask(__name__)
