@@ -22,11 +22,11 @@ en=xmltodict.parse(en.text)
 
 list=[]
 listnum={}
-for i in range(85,114):
+for i in range(0,114):
     surename=fa['quran']['sura'][i]['@name']
     list.append(surename)
     listnum[surename]=i
-startmarkup = ReplyKeyboardMarkup(keyboard=list,resize_keyboard=True)
+startmarkup = ReplyKeyboardMarkup(keyboard=[list],resize_keyboard=True)
     
     
     
@@ -36,7 +36,7 @@ def handle(msg):
  if content_type == 'text':
     command = msg['text']
     print ('Got command: %s' % command)
-    if command=='\start':
+    if command=='/start':
        bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup )
     if command in listnum.keys():
        command=listnum[command]
