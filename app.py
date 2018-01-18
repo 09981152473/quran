@@ -26,7 +26,7 @@ for i in range(0,114):
     surename=fa['quran']['sura'][i]['@name']
     list.append(surename)
     listnum[surename]=i
-startmarkup = ReplyKeyboardMarkup(keyboard=[list],resize_keyboard=True)
+startmarkup = ReplyKeyboardMarkup(keyboard=[list])
     
     
     
