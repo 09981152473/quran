@@ -22,7 +22,7 @@ en=xmltodict.parse(en.text)
 
 list=[]
 listnum={}
-for i in range(0,114):
+for i in range(85,114):
     surename=fa['quran']['sura'][i]['@name']
     list.append(surename)
     listnum[surename]=i
