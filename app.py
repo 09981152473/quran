@@ -7,6 +7,7 @@ from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto,
 import requests
 import xmltodict
 import sys
+import time
 #reload(sys) 
 #sys.setdefaultencoding('UTF8')
 
@@ -36,11 +37,13 @@ def handle(msg):
     text=''
     for i in range(len(d)):
        text=''
+       if i in range(20,280,30):
+          time.sleep(2)  
        arr=ar['quran']['sura'][sure]['aya'][i]['@text']
        enn=en['quran']['sura'][sure]['aya'][i]['@text']
        faa=fa['quran']['sura'][sure]['aya'][i]['@text']
-       text='....'+str(i+1)+"...."
-       text+='\n'+arr+'\n'+faa+'\n'+enn
+       text='....'+surename+'....'+str(i+1)+"...."
+       text+='\n'+arr+'\n'+enn+'\n'+faa
        text+='\n'
        if len(text)<4000:
          bot.sendMessage(chat_id, text)
