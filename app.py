@@ -18,14 +18,6 @@ ar=xmltodict.parse(ar.text)
 fa=xmltodict.parse(fa.text)
 en=xmltodict.parse(en.text)
 
-
-
-app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'strix bot'
-
 def handle(msg):
  content_type, chat_type, chat_id = telepot.glance(msg)
  if content_type == 'text':
@@ -49,12 +41,36 @@ def handle(msg):
          bot.sendMessage(chat_id, text)
        else:
          bot.sendMessage(chat_id, 'too big')
+
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return 'strix bot'
+@app.route('/link', methods=['GET', 'POST'])
+def display_link():
+    first_key_in_database = key_id_map.items()[0][0]
+    return '<a href="https://telegram.me/%s?start=%s">Open conversation with bot</a>' % (BOT_USERNAME, first_key_in_database)
+@app.route('/webhook', methods=['GET', 'POST'])
+def pass_update():
+    webhook.feed(request.data)
+    return 'OK'       
+            
 bot = telepot.Bot('538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU')
+webhook = OrderedWebhook(bot, handle)
 bot.message_loop(handle)
 print ('I am listening ...')
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
+    try:
+        bot.setWebhook(URL)
+    # Sometimes it would raise this error, but webhook still set successfully.
+    except telepot.exception.TooManyRequestsError:
+        pass
+
+    webhook.run_as_thread()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
     
