@@ -1,15 +1,11 @@
 import os
 from flask import Flask
-import asyncio
 import telepot
-from telepot.aio.loop import MessageLoop
-from telepot.aio.delegate import pave_event_space, per_chat_id, create_open
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 import requests
 import xmltodict
-import sys
-import time
 import random
+import time
 
 
 ar=requests.get("https://tyto.ir/quran-simple.xml")
@@ -27,75 +23,65 @@ for i in range(0,114):
     listnum[surename]=i
 list.append(['back'])
 suremarkup = ReplyKeyboardMarkup(keyboard=list)
-startmarkup=ReplyKeyboardMarkup(keyboard=[['list'],['random']])
+startmarkup=ReplyKeyboardMarkup(keyboard=[['list','random']])
+    
+    
 
-class MessageCounter(telepot.aio.helper.ChatHandler):
-    def __init__(self, *args, **kwargs):
-        super(MessageCounter, self).__init__(*args, **kwargs)
-        self._count = 0
-        
-    async def on_chat_message(self, msg):
-        self._command=msg['text']
-        if self._command=='/start':
-          self._wel='wellcome'
-          await self.sender.sendMessage(self._wel,reply_markup=startmarkup )
-        if self._command=='list':
-          self._wel='list'
-          await self.sender.sendMessage(self._wel,reply_markup=suremarkup )
-        if self._command=='random':
-              self._command=random.randint(0,113)
-              self._d=fa['quran']['sura'][self._command]['aya']
-              self._i=random.randint(0,self._d)
-              self._text=''
-              self._arr=ar['quran']['sura'][self._sure]['aya'][self._i]['@text']
-              self._enn=en['quran']['sura'][self._sure]['aya'][self._i]['@text']
-              self._faa=fa['quran']['sura'][self._sure]['aya'][self._i]['@text']
-              self._text='....#'+self._surename+'....'+str(self._i+1)+"...."+'\n'
-              self._text+='\n'+self._arr+'\n'+self._enn+'\n'+self._faa
-              self._text+='\n'+ self._command+":"+self._i
-              await self.sender.sendMessage(str(self._text))
-            
-        if self._command in listnum.keys():
-           self._command=listnum[self._command]
-           self._sure=int(self._command)
-           self._surename=fa['quran']['sura'][self._sure]['@name']
-           self._d=fa['quran']['sura'][self._sure]['aya']
-           
-           for self._i in range(len(self._d)):
-              self._text=''
-              self._arr=ar['quran']['sura'][self._sure]['aya'][self._i]['@text']
-              self._enn=en['quran']['sura'][self._sure]['aya'][self._i]['@text']
-              self._faa=fa['quran']['sura'][self._sure]['aya'][self._i]['@text']
-              self._text='....#'+self._surename+'....'+str(self._i+1)+"...."+'\n'
-              self._text+='\n'+self._arr+'\n'+self._enn+'\n'+self._faa
-              self._text+='\n'
-              if len(self._text)<4000:
-                  try:
-                     await self.sender.sendMessage(str(self._text))
-                     
-                  except telepot.exception.TelegramError as ex:
-                     print(self._i)
-                     time.sleep(31)
-                     await self.sender.sendMessage(str(self._text))
+def handle(msg):
+ content_type, chat_type, chat_id = telepot.glance(msg)
+ if content_type == 'text':
+    command = msg['text']
+    print ('Got command: %s' % command)
+    if command=='/start':
+       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup  )
+    if command=='list':
+       bot.sendMessage(chat_id,'wellcome',reply_markup=suremarkup   )
+    if command=='random':
+              sure=random.randint(0,113)
+              d=fa['quran']['sura'][sure]['aya']
+              i=random.randint(0,d)
+              text=''
+              surename=fa['quran']['sura'][sure]['@name']
+              arr=ar['quran']['sura'][sure]['aya'][i]['@text']
+              enn=en['quran']['sura'][sure]['aya'][i]['@text']
+              faa=fa['quran']['sura'][sure]['aya'][i]['@text']
+              text='....#'+surename+'....'+str(i+1)+"...."+'\n'
+              text+='\n'+arr+'\n'+enn+'\n'+faa
+              text+='\n'+ command+":"+i
+              bot.sendMessage(chat_id,str(text))
+    if command in listnum.keys():
+       command=listnum[command]
+       sure=int(command)-1
+       surename=fa['quran']['sura'][sure]['@name']
+       d=fa['quran']['sura'][sure]['aya']
+       text=''
+       for i in range(len(d)):
+          text=''
+          arr=ar['quran']['sura'][sure]['aya'][i]['@text']
+          enn=en['quran']['sura'][sure]['aya'][i]['@text']
+          faa=fa['quran']['sura'][sure]['aya'][i]['@text']
+          text='....#'+surename+'....'+str(i+1)+"...."+'\n'
+          text+='\n'+arr+'\n'+enn+'\n'+faa
+          text+='\n'
+          if len(text)<4000:
+            try:
+              bot.sendMessage(chat_id, text)
+            except telepot.exception.TooManyRequestsError:
+                pass
+          else:
+            bot.sendMessage(chat_id, 'too big')
 
-              else:
-                self._text='too big'
-                print('too big')
-                await self.sender.sendMessage(self._text )
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return 'strix quran'
-       
+    return 'strix bot'
+
             
-TOKEN = '538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU'  # get token from command-line
-bot = telepot.aio.DelegatorBot(TOKEN, [pave_event_space()(per_chat_id(), create_open, MessageCounter, timeout=10),])
-loop = asyncio.get_event_loop()
-loop.create_task(MessageLoop(bot).run_forever())
-print('Listening ...')
-loop.run_forever()
+bot = telepot.Bot('538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU')
+bot.message_loop(handle)
+print ('I am listening ...')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
