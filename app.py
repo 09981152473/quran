@@ -33,13 +33,13 @@ def handle(msg):
     command = msg['text']
     print ('Got command: %s' % command)
     if command=='/start':
-       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup  )
+       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup ,resize_keyboard=True )
     if command=='list':
-       bot.sendMessage(chat_id,'wellcome',reply_markup=suremarkup   )
+       bot.sendMessage(chat_id,'wellcome',reply_markup=suremarkup  ,resize_keyboard=True )
     if command=='random':
               sure=random.randint(0,113)
               d=fa['quran']['sura'][sure]['aya']
-              i=random.randint(0,d)
+              i=random.randint(0,len(d))
               text=''
               surename=fa['quran']['sura'][sure]['@name']
               arr=ar['quran']['sura'][sure]['aya'][i]['@text']
