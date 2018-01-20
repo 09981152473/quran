@@ -22,8 +22,8 @@ for i in range(0,114):
     list.append([surename])
     listnum[surename]=i
 list.append(['back'])
-suremarkup = ReplyKeyboardMarkup(keyboard=list)
-startmarkup=ReplyKeyboardMarkup(keyboard=[['list','random']])
+suremarkup = ReplyKeyboardMarkup(keyboard=list ,resize_keyboard=True)
+startmarkup=ReplyKeyboardMarkup(keyboard=[['list','random']] ,resize_keyboard=True)
     
     
 
@@ -33,9 +33,11 @@ def handle(msg):
     command = msg['text']
     print ('Got command: %s' % command)
     if command=='/start':
-       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup ,resize_keyboard=True )
+       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup  )
+    if command=='back':
+       bot.sendMessage(chat_id,'back',reply_markup=startmarkup  )
     if command=='list':
-       bot.sendMessage(chat_id,'wellcome',reply_markup=suremarkup  ,resize_keyboard=True )
+       bot.sendMessage(chat_id,'list',reply_markup=suremarkup   )
     if command=='random':
               sure=random.randint(0,113)
               d=fa['quran']['sura'][sure]['aya']
@@ -47,11 +49,11 @@ def handle(msg):
               faa=fa['quran']['sura'][sure]['aya'][i]['@text']
               text='....#'+surename+'....'+str(i+1)+"...."+'\n'
               text+='\n'+arr+'\n'+enn+'\n'+faa
-              text+='\n'+ command+":"+i
+              text+='\n'+ str(command)+":"+str(i)
               bot.sendMessage(chat_id,str(text))
     if command in listnum.keys():
        command=listnum[command]
-       sure=int(command)-1
+       sure=int(command)
        surename=fa['quran']['sura'][sure]['@name']
        d=fa['quran']['sura'][sure]['aya']
        text=''
