@@ -2,16 +2,11 @@ import os
 from flask import Flask
 import telepot
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
-from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
-from telepot.namedtuple import InlineQueryResultArticle, InlineQueryResultPhoto, InputTextMessageContent
 import requests
 import xmltodict
-from telepot.loop import OrderedWebhook
 import sys
-import random
 import time
-#reload(sys) 
-#sys.setdefaultencoding('UTF8')
+
 
 ar=requests.get("https://tyto.ir/quran-simple.xml")
 fa=requests.get("http://tanzil.net/trans/?transID=fa.gharaati&type=xml")
@@ -27,65 +22,55 @@ for i in range(0,114):
     list.append([surename])
     listnum[surename]=i
 startmarkup = ReplyKeyboardMarkup(keyboard=list)
+class MessageCounter(telepot.aio.helper.ChatHandler):
+    def __init__(self, *args, **kwargs):
+        super(MessageCounter, self).__init__(*args, **kwargs)
+        self._count = 0
+        
+    async def on_chat_message(self, msg):
+        self._command=msg['text']
+        if self._command=='/start':
+          self._wel='welcome'
+          await self.sender.sendMessage(self._wel,reply_markup=startmarkup )
+          
+        if self._command in listnum.keys():
+           self._command=listnum[self._command]
+           self._sure=int(self._command)-1
+           self._surename=fa['quran']['sura'][self._sure]['@name']
+           self._d=fa['quran']['sura'][self._sure]['aya']
+           for self._i in range(len(self._d)):
+              self._text=''
+              self._arr=ar['quran']['sura'][self._sure]['aya'][self._i]['@text']
+              self._enn=en['quran']['sura'][self._sure]['aya'][self._i]['@text']
+              self._faa=fa['quran']['sura'][self._sure]['aya'][self._i]['@text']
+              self._text='....#'+self._surename+'....'+str(self._i+1)+"...."+'\n'
+              self._text+='\n'+self._arr+'\n'+self._enn+'\n'+self._faa
+              self._text+='\n'
+              if len(self._text)<4000:
+                await self.sender.sendMessage(self._text)
+              else:
+                self._text='too big'
+                print('too big')
+                await self.sender.sendMessage(self._text )
+        
     
-    
-    
-
-def handle(msg):
- content_type, chat_type, chat_id = telepot.glance(msg)
- if content_type == 'text':
-    command = msg['text']
-    print ('Got command: %s' % command)
-    if command=='/start':
-       bot.sendMessage(chat_id,'wellcome',reply_markup=startmarkup )
-    if command in listnum.keys():
-       command=listnum[command]
-       sure=int(command)-1
-       surename=fa['quran']['sura'][sure]['@name']
-       d=fa['quran']['sura'][sure]['aya']
-       text=''
-       for i in range(len(d)):
-          text=''
-          arr=ar['quran']['sura'][sure]['aya'][i]['@text']
-          enn=en['quran']['sura'][sure]['aya'][i]['@text']
-          faa=fa['quran']['sura'][sure]['aya'][i]['@text']
-          text='....#'+surename+'....'+str(i+1)+"...."+'\n'
-          text+='\n'+arr+'\n'+enn+'\n'+faa
-          text+='\n'
-          if len(text)<4000:
-            bot.sendMessage(chat_id, text)
-          else:
-            bot.sendMessage(chat_id, 'too big')
 
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return 'strix bot'
-@app.route('/link', methods=['GET', 'POST'])
-def display_link():
-    first_key_in_database = key_id_map.items()[0][0]
-    return '<a href="https://telegram.me/%s?start=%s">Open conversation with bot</a>' % (BOT_USERNAME, first_key_in_database)
-@app.route('/webhook', methods=['GET', 'POST'])
-def pass_update():
-    webhook.feed(str(random.randint(1,1000)))
-    return 'OK'       
+    return 'strix quran'
+       
             
-bot = telepot.Bot('538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU')
-webhook = OrderedWebhook(bot, handle)
-bot.message_loop(handle)
-print ('I am listening ...')
+TOKEN = '538042986:AAFrAdw7fWN6hsm6lOSq7b8SVZzgVeJlusU'  # get token from command-line
+bot = telepot.aio.DelegatorBot(TOKEN, [pave_event_space()(per_chat_id(), create_open, MessageCounter, timeout=10),])
+loop = asyncio.get_event_loop()
+loop.create_task(MessageLoop(bot).run_forever())
+print('Listening ...')
+loop.run_forever()
 
 if __name__ == '__main__':
-    # Bind to PORT if defined, otherwise default to 5000.
-    try:
-        bot.setWebhook()
-    # Sometimes it would raise this error, but webhook still set successfully.
-    except telepot.exception.TooManyRequestsError:
-        pass
-
-    webhook.run_as_thread()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
     
