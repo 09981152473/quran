@@ -62,7 +62,7 @@ def handle(msg):
           arr=ar['quran']['sura'][sure]['aya'][i]['@text']
           enn=en['quran']['sura'][sure]['aya'][i]['@text']
           faa=fa['quran']['sura'][sure]['aya'][i]['@text']
-          text='....#'+surename+'....'+str(i+1)+"...."+'\n'
+          text='....#'+surename+'....'+str(i+1)+'/'+str(len(d)+1)+"...."+'\n'
           text+='\n'+arr+'\n'+enn+'\n'+faa
           text+='\n'
           if len(text)<4000:
