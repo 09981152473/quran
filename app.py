@@ -49,7 +49,7 @@ def handle(msg):
               faa=fa['quran']['sura'][sure]['aya'][i]['@text']
               text='....#'+surename+'....'+str(i+1)+"...."+'\n'
               text+='\n'+arr+'\n'+enn+'\n'+faa
-              text+='\n'+ str(command)+":"+str(i)
+              text+='\n'+ str(sure+1)+":"+str(i+1)
               bot.sendMessage(chat_id,str(text))
     if command in listnum.keys():
        command=listnum[command]
@@ -69,7 +69,15 @@ def handle(msg):
             try:
               bot.sendMessage(chat_id, text)
             except telepot.exception.TooManyRequestsError:
-                pass
+                time.sleep(1)
+                try :
+                  bot.sendMessage(chat_id, text)
+                except telepot.exception.TooManyRequestsError:
+                  time.sleep(5)
+                  try :
+                    bot.sendMessage(chat_id, text)
+                  except telepot.exception.TooManyRequestsError:
+                    pass
           else:
             bot.sendMessage(chat_id, 'too big')
 
