@@ -69,14 +69,15 @@ def handle(msg):
             try:
               bot.sendMessage(chat_id, text)
             except telepot.exception.TooManyRequestsError:
-                time.sleep(1)
+                time.sleep(0.5)
                 try :
                   bot.sendMessage(chat_id, text)
                 except telepot.exception.TooManyRequestsError:
-                  time.sleep(5)
+                  time.sleep(0.5)
                   try :
                     bot.sendMessage(chat_id, text)
                   except telepot.exception.TooManyRequestsError:
+                    print(str(i))
                     pass
           else:
             bot.sendMessage(chat_id, 'too big')
